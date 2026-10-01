@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -52,13 +53,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  *
  */
 @TeleOp(name = "Teleop Test", group = "Robot")
-@Disabled
 public class TeleopTest extends OpMode {
     // This declares the four motors needed
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
     DcMotor backRightDrive;
+    DcMotor intake;
 
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
@@ -69,12 +70,15 @@ public class TeleopTest extends OpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        intake = hardwareMap.get(DcMotor.class, "intake");
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -108,11 +112,12 @@ public class TeleopTest extends OpMode {
         }
         // If you press the left bumper, you get a drive from the point of view of the robot
         // (much like driving an RC vehicle)
-        if (gamepad1.left_bumper) {
-            drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        } else {
-            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        }
+//        if (gamepad1.left_bumper) {
+            drive(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+//        } else {
+//            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+//        }
+        intake.setPower(gamepad1.right_stick_x);
     }
 
     // This routine drives the robot field relative
