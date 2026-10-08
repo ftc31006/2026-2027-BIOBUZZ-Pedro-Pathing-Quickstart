@@ -28,15 +28,24 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /*
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -59,10 +68,10 @@ public class TeleopTest extends OpMode {
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
     DcMotor backRightDrive;
-    DcMotor intake;
-
+    DcMotorEx intake;
+    NormalizedColorSensor colorSensor;
     // This declares the IMU needed to get the current direction the robot is facing
-    IMU imu;
+    //IMU imu;
 
     @Override
     public void init() {
@@ -70,7 +79,8 @@ public class TeleopTest extends OpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
-        intake = hardwareMap.get(DcMotor.class, "intake");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "Rev_Color_Sensor");
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
@@ -78,24 +88,26 @@ public class TeleopTest extends OpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.REVERSE);
+        //intake.setDirection(DcMotorSimple.Direction.FORWARD);
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        imu = hardwareMap.get(IMU.class, "imu");
+//        // This needs to be changed to match the orientation on your robot
+//        RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
+//                RevHubOrientationOnRobot.LogoFacingDirection.UP;
+//        RevHubOrientationOnRobot.UsbFacingDirection usbDirection =
+//                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+//
+//        RevHubOrientationOnRobot orientationOnRobot = new
+//                RevHubOrientationOnRobot(logoDirection, usbDirection);
+//        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
-        imu = hardwareMap.get(IMU.class, "imu");
-        // This needs to be changed to match the orientation on your robot
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-
-        RevHubOrientationOnRobot orientationOnRobot = new
-                RevHubOrientationOnRobot(logoDirection, usbDirection);
-        imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 
     @Override
@@ -105,10 +117,28 @@ public class TeleopTest extends OpMode {
         telemetry.addLine("The left joystick sets the robot direction");
         telemetry.addLine("Moving the right joystick left and right turns the robot");
 
+//        color sensor code
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+        final float[] hsvValues = new float[3];
+        Color.colorToHSV(colors.toColor(), hsvValues);
+
+        if (colorSensor instanceof DistanceSensor) {
+            telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+        }
+        telemetry.addLine()
+                .addData("Red", "%.3f", colors.red)
+                .addData("Green", "%.3f", colors.green)
+                .addData("Blue", "%.3f", colors.blue);
+        telemetry.addLine()
+                .addData("Hue", "%.3f", hsvValues[0])
+                .addData("Saturation", "%.3f", hsvValues[1])
+                .addData("Value", "%.3f", hsvValues[2]);
+        telemetry.addData("Alpha", "%.3f", colors.alpha);
+
         // If you press the A button, then you reset the Yaw to be zero from the way
         // the robot is currently pointing
         if (gamepad1.a) {
-            imu.resetYaw();
+            //imu.resetYaw();
         }
         // If you press the left bumper, you get a drive from the point of view of the robot
         // (much like driving an RC vehicle)
@@ -117,26 +147,26 @@ public class TeleopTest extends OpMode {
 //        } else {
 //            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 //        }
-        intake.setPower(gamepad1.right_stick_x);
+       // intake.setPower(gamepad1.right_stick_x);
     }
 
     // This routine drives the robot field relative
-    private void driveFieldRelative(double forward, double right, double rotate) {
-        // First, convert direction being asked to drive to polar coordinates
-        double theta = Math.atan2(forward, right);
-        double r = Math.hypot(right, forward);
-
-        // Second, rotate angle by the angle the robot is pointing
-        theta = AngleUnit.normalizeRadians(theta -
-                imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
-
-        // Third, convert back to cartesian
-        double newForward = r * Math.sin(theta);
-        double newRight = r * Math.cos(theta);
-
-        // Finally, call the drive method with robot relative forward and right amounts
-        drive(newForward, newRight, rotate);
-    }
+//    private void driveFieldRelative(double forward, double right, double rotate) {
+//        // First, convert direction being asked to drive to polar coordinates
+//        double theta = Math.atan2(forward, right);
+//        double r = Math.hypot(right, forward);
+//
+//        // Second, rotate angle by the angle the robot is pointing
+//        theta = AngleUnit.normalizeRadians(theta -
+//                imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+//
+//        // Third, convert back to cartesian
+//        double newForward = r * Math.sin(theta);
+//        double newRight = r * Math.cos(theta);
+//
+//        // Finally, call the drive method with robot relative forward and right amounts
+//        drive(newForward, newRight, rotate);
+//    }
 
     // Thanks to FTC16072 for sharing this code!!
     public void drive(double forward, double right, double rotate) {
@@ -148,7 +178,7 @@ public class TeleopTest extends OpMode {
         double backLeftPower = forward - right + rotate;
 
         double maxPower = 1.0;
-        double maxSpeed = 1.0;  // make this slower for outreaches
+        double maxSpeedOffIntake = .2;
 
         // This is needed to make sure we don't pass > 1.0 to any wheel
         // It allows us to keep all of the motors in proportion to what they should
@@ -161,9 +191,11 @@ public class TeleopTest extends OpMode {
         // We multiply by maxSpeed so that it can be set lower for outreaches
         // When a young child is driving the robot, we may not want to allow full
         // speed.
-        frontLeftDrive.setPower(maxSpeed * (frontLeftPower / maxPower));
-        frontRightDrive.setPower(maxSpeed * (frontRightPower / maxPower));
-        backLeftDrive.setPower(maxSpeed * (backLeftPower / maxPower));
-        backRightDrive.setPower(maxSpeed * (backRightPower / maxPower));
+        intake.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(130, 0, 0, 12.4));
+        frontLeftDrive.setPower( (frontLeftPower / maxPower));
+        frontRightDrive.setPower( (frontRightPower / maxPower));
+        backLeftDrive.setPower( (backLeftPower / maxPower));
+        backRightDrive.setPower( (backRightPower / maxPower));
+        intake.setVelocity(maxSpeedOffIntake);
     }
 }
