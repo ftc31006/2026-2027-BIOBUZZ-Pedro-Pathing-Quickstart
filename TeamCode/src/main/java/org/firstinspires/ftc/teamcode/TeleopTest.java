@@ -30,6 +30,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -73,8 +74,11 @@ public class TeleopTest extends OpMode {
     // This declares the IMU needed to get the current direction the robot is facing
     //IMU imu;
 
+
     @Override
     public void init() {
+
+
         frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
@@ -108,6 +112,7 @@ public class TeleopTest extends OpMode {
 //                RevHubOrientationOnRobot(logoDirection, usbDirection);
 //        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
+
     }
 
     @Override
@@ -135,7 +140,7 @@ public class TeleopTest extends OpMode {
                 .addData("Value", "%.3f", hsvValues[2]);
         telemetry.addData("Alpha", "%.3f", colors.alpha);
 
-        // If you press the A button, then you reset the Yaw to be zero from the way
+        // If you press the A button, then Qyou reset the Yaw to be zero from the way
         // the robot is currently pointing
         if (gamepad1.a) {
             //imu.resetYaw();
@@ -178,7 +183,6 @@ public class TeleopTest extends OpMode {
         double backLeftPower = forward - right + rotate;
 
         double maxPower = 1.0;
-        double maxSpeedOffIntake = .2;
 
         // This is needed to make sure we don't pass > 1.0 to any wheel
         // It allows us to keep all of the motors in proportion to what they should
@@ -191,11 +195,17 @@ public class TeleopTest extends OpMode {
         // We multiply by maxSpeed so that it can be set lower for outreaches
         // When a young child is driving the robot, we may not want to allow full
         // speed.
-        intake.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(130, 0, 0, 12.4));
+
         frontLeftDrive.setPower( (frontLeftPower / maxPower));
         frontRightDrive.setPower( (frontRightPower / maxPower));
         backLeftDrive.setPower( (backLeftPower / maxPower));
         backRightDrive.setPower( (backRightPower / maxPower));
-        intake.setVelocity(maxSpeedOffIntake);
+        intake.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+                new PIDFCoefficients(1.2, 0.12, 0, 11.8));
+
+        double intakeTarget = 0.7 * 2780;   // ~70% of max, about 1,950 ticks/sec
+        intake.setVelocity(intakeTarget);
+        telemetry.addData("Intake target", intakeTarget);
+        telemetry.addData("Intake actual", intake.getVelocity());
     }
 }
