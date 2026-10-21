@@ -58,7 +58,6 @@ public class ConceptScanServo extends LinearOpMode {
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
     // Define class members
-    Servo_Pollen   servo;
     double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
 
@@ -68,7 +67,6 @@ public class ConceptScanServo extends LinearOpMode {
 
         // Connect to servo (Assume Robot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(Servo.class, "Servo_Pollen");
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );
@@ -103,7 +101,6 @@ public class ConceptScanServo extends LinearOpMode {
             telemetry.update();
 
             // Set the servo to the new position and pause;
-            servo.setPosition(position);
             sleep(CYCLE_MS);
             idle();
         }
