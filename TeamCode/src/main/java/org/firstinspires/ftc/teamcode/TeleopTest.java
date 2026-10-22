@@ -73,8 +73,20 @@ public class TeleopTest extends OpMode {
     DcMotorEx intake;
     NormalizedColorSensor colorSensor;
     DcMotorEx Pollen_Cannon;
-    DcMotorEx Necter_Cannon;
+    DcMotorEx Nectar_Cannon;
     ServoImplEx Pollen_Kicker;
+    ServoImplEx Pollen_Gate;
+    ServoImplEx Nectar_Kicker;
+    ServoImplEx Nectar_Gate;
+
+    double pollen_Kicker_Open = .55;
+    double pollen_Kicker_Closed = .45;
+    double nectar_Kicker_Open = .35;
+    double nectar_Kicker_Closed = .6;
+    double pollen_Gate_Open = .6;
+    double pollen_Gate_Closed = .4;
+    double nectar_Gate_Open = .45;
+    double nectar_Gate_Closed = .65;
 
     // This declares the IMU needed to get the current direction the robot is facing
     //IMU imu;
@@ -89,12 +101,17 @@ public class TeleopTest extends OpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
-        Necter_Cannon = hardwareMap.get(DcMotorEx.class, "Necter_Cannon");
+        Nectar_Cannon = hardwareMap.get(DcMotorEx.class, "Nectar_Cannon");
         Pollen_Cannon = hardwareMap.get(DcMotorEx.class, "Pollen_Cannon");
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "Rev_Color_Sensor");
         Pollen_Kicker = hardwareMap.get(ServoImplEx.class, "Pollen_Kicker");   // must match your config name
         Pollen_Kicker.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
-        Pollen_Kicker.setPosition(0.0);                                     // starting position
+        Pollen_Gate = hardwareMap.get(ServoImplEx.class, "Pollen_Gate");   // must match your config name
+        Pollen_Gate.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
+        Nectar_Kicker = hardwareMap.get(ServoImplEx.class, "Nectar_Kicker");   // must match your config name
+        Nectar_Kicker.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
+        Nectar_Gate = hardwareMap.get(ServoImplEx.class, "Nectar_Gate");   // must match your config name
+        Nectar_Gate.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
@@ -104,7 +121,7 @@ public class TeleopTest extends OpMode {
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
         Pollen_Cannon.setDirection(DcMotor.Direction.REVERSE);
-        Necter_Cannon.setDirection(DcMotor.Direction.FORWARD);
+        Nectar_Cannon.setDirection(DcMotor.Direction.FORWARD);
 
         //intake.setDirection(DcMotorSimple.Direction.FORWARD);
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
@@ -115,7 +132,14 @@ public class TeleopTest extends OpMode {
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Pollen_Cannon.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Necter_Cannon.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Nectar_Cannon.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 //        imu = hardwareMap.get(IMU.class, "imu");
 //        // This needs to be changed to match the orientation on your robot
 //        RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
@@ -128,6 +152,14 @@ public class TeleopTest extends OpMode {
 //        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
 
+    }
+
+    @Override
+    public void start() {
+        Pollen_Kicker.setPosition(.55);
+        Pollen_Gate.setPosition(.4);
+        Nectar_Kicker.setPosition(.35);
+        Nectar_Gate.setPosition(.65);
     }
 
     @Override
@@ -163,17 +195,38 @@ public class TeleopTest extends OpMode {
         // If you press the left bumper, you get a drive from the point of view of the robot
         // (much like driving an RC vehicle)
 //        if (gamepad1.left_bumper) {
-            drive(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            drive(gamepad1.right_stick_x, -gamepad1.left_stick_x, -gamepad1.left_stick_y);
 //        } else {
 //            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 //        }
        // intake.setPower(gamepad1.right_stick_x);
 
-        if (gamepad1.y) {
-            Pollen_Kicker.setPosition(0.5);
-        } else if (gamepad1.x) {
-            Pollen_Kicker.setPosition(0.0);
+        if (gamepad2.leftTriggerWasPressed()) {
+            Pollen_Kicker.setPosition(pollen_Kicker_Closed);
         }
+        if (gamepad2.leftBumperWasPressed()) {
+            Pollen_Kicker.setPosition(pollen_Kicker_Open);
+        }
+        if (gamepad2.rightTriggerWasPressed()) {
+            Nectar_Kicker.setPosition(nectar_Kicker_Closed);
+        }
+        if (gamepad2.rightBumperWasPressed()) {
+            Nectar_Kicker.setPosition(nectar_Kicker_Open);
+        }
+        if (gamepad2.yWasPressed()) {
+            Pollen_Gate.setPosition(pollen_Gate_Open);
+        }
+        if (gamepad2.xWasPressed()) {
+            Pollen_Gate.setPosition(pollen_Gate_Closed);
+        }
+        if (gamepad2.bWasPressed()) {
+            Nectar_Gate.setPosition(nectar_Gate_Open);
+        }
+        if (gamepad2.aWasPressed()) {
+            Nectar_Gate.setPosition(nectar_Gate_Closed);
+        }
+
+
 
 
 
@@ -228,31 +281,31 @@ public class TeleopTest extends OpMode {
         backRightDrive.setPower( (backRightPower / maxPower));
         intake.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
                 new PIDFCoefficients(1.2, 0.12, 0, 11.8));
-        Necter_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+        Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
                 new PIDFCoefficients(1.2, 0.12, 0, 11.8));
         Pollen_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
                 new PIDFCoefficients(1.2, 0.12, 0, 11.8));
 
 
         double intakeTarget = 0.7 * 2780;   // ~70% of max, about 1,950 ticks/sec
-       // intake.setVelocity(intakeTarget);
+        intake.setVelocity(intakeTarget);
         telemetry.addData("Intake target", intakeTarget);
         telemetry.addData("Intake actual", intake.getVelocity());
 
-        Necter_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+        Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
 
                 new PIDFCoefficients(1.2, 0.12, 0, 11.8));
 
-        double Ncannon = getCannonTicksPerSecond(4500);
-       // Necter_Cannon.setVelocity(Ncannon);
-        telemetry.addData("Necter_Cannon target", Ncannon);
-        telemetry.addData(" actual", Necter_Cannon.getVelocity());
-        Necter_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+        double Ncannon = getCannonTicksPerSecond(4200);
+        Nectar_Cannon.setVelocity(Ncannon);
+        telemetry.addData("Nectar_Cannon target", Ncannon);
+        telemetry.addData(" actual", Nectar_Cannon.getVelocity());
+        Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
 
                 new PIDFCoefficients(1.2, 0.12, 0, 11.8));
 
         double Pcannon = getCannonTicksPerSecond(4000);
-        // Pollen_Cannon.setVelocity(Pcannon);
+        Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());
     }
