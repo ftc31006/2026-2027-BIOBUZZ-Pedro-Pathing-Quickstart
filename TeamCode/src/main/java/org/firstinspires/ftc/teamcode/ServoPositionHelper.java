@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @TeleOp(name="Servo Position Helper", group="Concept")
-@Disabled
+//@Disabled
 public class ServoPositionHelper extends LinearOpMode {
 
     // Declare OpMode member.
@@ -90,7 +90,7 @@ public class ServoPositionHelper extends LinearOpMode {
          * Initialize the hardware variables, string here must exactly match the name of a configured
          * servo in the Robot Configuration on your Driver Station.
          */
-        servo = hardwareMap.get(Servo.class, "Nectar_Gate");
+        servo = hardwareMap.get(Servo.class, "Pollen_Kicker");
 
         /*
          * Set the servo to an initial position of 0.5, we do this before the while (opModeIsActive())

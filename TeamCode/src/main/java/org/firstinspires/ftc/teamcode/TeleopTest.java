@@ -79,8 +79,8 @@ public class TeleopTest extends OpMode {
     ServoImplEx Nectar_Kicker;
     ServoImplEx Nectar_Gate;
 
-    double pollen_Kicker_Open = .55;
-    double pollen_Kicker_Closed = .45;
+    double pollen_Kicker_Open = .45;
+    double pollen_Kicker_Closed = .7;
     double nectar_Kicker_Open = .35;
     double nectar_Kicker_Closed = .6;
     double pollen_Gate_Open = .6;
@@ -123,7 +123,6 @@ public class TeleopTest extends OpMode {
         Pollen_Cannon.setDirection(DcMotor.Direction.REVERSE);
         Nectar_Cannon.setDirection(DcMotor.Direction.FORWARD);
 
-        //intake.setDirection(DcMotorSimple.Direction.FORWARD);
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -174,6 +173,7 @@ public class TeleopTest extends OpMode {
         final float[] hsvValues = new float[3];
         Color.colorToHSV(colors.toColor(), hsvValues);
 
+
         if (colorSensor instanceof DistanceSensor) {
             telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         }
@@ -201,35 +201,37 @@ public class TeleopTest extends OpMode {
 //        }
        // intake.setPower(gamepad1.right_stick_x);
 
-        if (gamepad2.leftTriggerWasPressed()) {
+        if (gamepad2.left_trigger >= .5) {
             Pollen_Kicker.setPosition(pollen_Kicker_Closed);
         }
-        if (gamepad2.leftBumperWasPressed()) {
+        else {
             Pollen_Kicker.setPosition(pollen_Kicker_Open);
         }
-        if (gamepad2.rightTriggerWasPressed()) {
+        if (gamepad2.right_trigger >= .5) {
             Nectar_Kicker.setPosition(nectar_Kicker_Closed);
         }
-        if (gamepad2.rightBumperWasPressed()) {
+        else {
             Nectar_Kicker.setPosition(nectar_Kicker_Open);
         }
-        if (gamepad2.yWasPressed()) {
+        if (gamepad2.left_bumper) {
             Pollen_Gate.setPosition(pollen_Gate_Open);
         }
-        if (gamepad2.xWasPressed()) {
+        else {
             Pollen_Gate.setPosition(pollen_Gate_Closed);
         }
-        if (gamepad2.bWasPressed()) {
+        if (gamepad2.right_bumper) {
             Nectar_Gate.setPosition(nectar_Gate_Open);
         }
-        if (gamepad2.aWasPressed()) {
+        else {
             Nectar_Gate.setPosition(nectar_Gate_Closed);
+
         }
 
 
 
 
 
+        telemetry.addData("leftbumper", gamepad1.left_bumper);
         telemetry.addData("Servo position", Pollen_Kicker.getPosition());
 
     }
@@ -256,12 +258,14 @@ public class TeleopTest extends OpMode {
     public void drive(double forward, double right, double rotate) {
         // This calculates the power needed for each wheel based on the amount of forward,
         // strafe right, and rotate
-        double frontLeftPower = forward + right + rotate;
-        double frontRightPower = forward - right - rotate;
-        double backRightPower = forward + right - rotate;
-        double backLeftPower = forward - right + rotate;
+        double multiplier = gamepad1.left_bumper ? .65 : 1;
+        double frontLeftPower = multiplier * (forward + right + rotate);
+        double frontRightPower = multiplier * (forward - right - rotate);
+        double backRightPower = multiplier * (forward + right - rotate);
+        double backLeftPower = multiplier * (forward - right + rotate);
 
-        double maxPower = 1.0;
+        double maxPower = 1;
+
 
         // This is needed to make sure we don't pass > 1.0 to any wheel
         // It allows us to keep all of the motors in proportion to what they should
@@ -274,7 +278,7 @@ public class TeleopTest extends OpMode {
         // We multiply by maxSpeed so that it can be set lower for outreaches
         // When a young child is driving the robot, we may not want to allow full
         // speed.
-
+        telemetry.addData("maxpower", maxPower);
         frontLeftDrive.setPower( (frontLeftPower / maxPower));
         frontRightDrive.setPower( (frontRightPower / maxPower));
         backLeftDrive.setPower( (backLeftPower / maxPower));
@@ -287,7 +291,7 @@ public class TeleopTest extends OpMode {
                 new PIDFCoefficients(1.2, 0.12, 0, 11.8));
 
 
-        double intakeTarget = 0.7 * 2780;   // ~70% of max, about 1,950 ticks/sec
+        double intakeTarget = 0.7 * 2780 * gamepad2.left_stick_y;   // ~70% of max, about 1,950 ticks/sec
         intake.setVelocity(intakeTarget);
         telemetry.addData("Intake target", intakeTarget);
         telemetry.addData("Intake actual", intake.getVelocity());
@@ -304,7 +308,7 @@ public class TeleopTest extends OpMode {
 
                 new PIDFCoefficients(1.2, 0.12, 0, 11.8));
 
-        double Pcannon = getCannonTicksPerSecond(4000);
+        double Pcannon = getCannonTicksPerSecond(3500);
         Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());
