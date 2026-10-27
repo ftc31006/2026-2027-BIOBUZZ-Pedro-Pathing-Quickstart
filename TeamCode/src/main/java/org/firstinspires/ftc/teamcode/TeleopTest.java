@@ -104,6 +104,8 @@ public class TeleopTest extends OpMode {
         Nectar_Cannon = hardwareMap.get(DcMotorEx.class, "Nectar_Cannon");
         Pollen_Cannon = hardwareMap.get(DcMotorEx.class, "Pollen_Cannon");
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "Rev_Color_Sensor");
+        colorSensor.setGain(2);
+
         Pollen_Kicker = hardwareMap.get(ServoImplEx.class, "Pollen_Kicker");   // must match your config name
         Pollen_Kicker.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
         Pollen_Gate = hardwareMap.get(ServoImplEx.class, "Pollen_Gate");   // must match your config name
@@ -173,7 +175,6 @@ public class TeleopTest extends OpMode {
         final float[] hsvValues = new float[3];
         Color.colorToHSV(colors.toColor(), hsvValues);
 
-
         if (colorSensor instanceof DistanceSensor) {
             telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         }
@@ -186,6 +187,7 @@ public class TeleopTest extends OpMode {
                 .addData("Saturation", "%.3f", hsvValues[1])
                 .addData("Value", "%.3f", hsvValues[2]);
         telemetry.addData("Alpha", "%.3f", colors.alpha);
+
 
         // If you press the A button, then Qyou reset the Yaw to be zero from the way
         // the robot is currently pointing
@@ -213,19 +215,29 @@ public class TeleopTest extends OpMode {
         else {
             Nectar_Kicker.setPosition(nectar_Kicker_Open);
         }
-        if (gamepad2.left_bumper) {
-            Pollen_Gate.setPosition(pollen_Gate_Open);
-        }
-        else {
+        if (gamepad2.a){
             Pollen_Gate.setPosition(pollen_Gate_Closed);
-        }
-        if (gamepad2.right_bumper) {
             Nectar_Gate.setPosition(nectar_Gate_Open);
         }
-        else {
+        else{
+            Pollen_Gate.setPosition(pollen_Gate_Open);
             Nectar_Gate.setPosition(nectar_Gate_Closed);
-
         }
+
+
+//        if (gamepad2.left_bumper) {
+//            Pollen_Gate.setPosition(pollen_Gate_Open);
+//        }
+//        else {
+//            Pollen_Gate.setPosition(pollen_Gate_Closed);
+//        }
+//        if (gamepad2.right_bumper) {
+//            Nectar_Gate.setPosition(nectar_Gate_Open);
+//        }
+//        else {
+//            Nectar_Gate.setPosition(nectar_Gate_Closed);
+//
+//        }
 
 
 
