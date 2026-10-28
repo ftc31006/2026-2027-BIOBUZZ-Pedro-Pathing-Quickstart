@@ -32,21 +32,15 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /*
@@ -63,13 +57,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
-@TeleOp(name = "Teleop Test", group = "Robot")
-public class TeleopTest extends OpMode {
+@TeleOp(name = "Teleop", group = "Robot")
+public class Teleop extends OpMode {
     // This declares the four motors needed
-    DcMotor frontLeftDrive;
-    DcMotor frontRightDrive;
-    DcMotor backLeftDrive;
-    DcMotor backRightDrive;
+    DcMotorEx frontLeftDrive;
+    DcMotorEx frontRightDrive;
+    DcMotorEx backLeftDrive;
+    DcMotorEx backRightDrive;
     DcMotorEx intake;
     NormalizedColorSensor colorSensor;
     DcMotorEx Pollen_Cannon;
@@ -88,21 +82,16 @@ public class TeleopTest extends OpMode {
     double nectar_Gate_Open = .45;
     double nectar_Gate_Closed = .65;
 
-    // This declares the IMU needed to get the current direction the robot is facing
-    //IMU imu;
-
-
     @Override
     public void init() {
+        frontLeftDrive = getMotor("front_left_drive", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive = getMotor("front_right_drive", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive = getMotor("back_left_drive", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive = getMotor("back_right_drive", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
-        intake = hardwareMap.get(DcMotorEx.class, "intake");
-        Nectar_Cannon = hardwareMap.get(DcMotorEx.class, "Nectar_Cannon");
-        Pollen_Cannon = hardwareMap.get(DcMotorEx.class, "Pollen_Cannon");
+        intake = getMotor("intake", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
+        Nectar_Cannon = getMotor("Nectar_Cannon", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
+        Pollen_Cannon = getMotor("Pollen_Cannon", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "Rev_Color_Sensor");
         colorSensor.setGain(2);
 
@@ -115,32 +104,6 @@ public class TeleopTest extends OpMode {
         Nectar_Gate = hardwareMap.get(ServoImplEx.class, "Nectar_Gate");   // must match your config name
         Nectar_Gate.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
 
-        // We set the left motors in reverse which is needed for drive trains where the left
-        // motors are opposite to the right ones.
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
-        Pollen_Cannon.setDirection(DcMotor.Direction.REVERSE);
-        Nectar_Cannon.setDirection(DcMotor.Direction.FORWARD);
-
-        // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
-        // wires, you should remove these
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Pollen_Cannon.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Nectar_Cannon.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 //        imu = hardwareMap.get(IMU.class, "imu");
 //        // This needs to be changed to match the orientation on your robot
 //        RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
@@ -151,16 +114,14 @@ public class TeleopTest extends OpMode {
 //        RevHubOrientationOnRobot orientationOnRobot = new
 //                RevHubOrientationOnRobot(logoDirection, usbDirection);
 //        imu.initialize(new IMU.Parameters(orientationOnRobot));
-
-
     }
 
     @Override
     public void start() {
-        Pollen_Kicker.setPosition(.55);
-        Pollen_Gate.setPosition(.4);
-        Nectar_Kicker.setPosition(.35);
-        Nectar_Gate.setPosition(.65);
+        Pollen_Kicker.setPosition(pollen_Kicker_Open);
+        Pollen_Gate.setPosition(pollen_Gate_Closed);
+        Nectar_Kicker.setPosition(nectar_Kicker_Open);
+        Nectar_Gate.setPosition(nectar_Gate_Closed);
     }
 
     @Override
@@ -238,10 +199,6 @@ public class TeleopTest extends OpMode {
 //            Nectar_Gate.setPosition(nectar_Gate_Closed);
 //
 //        }
-
-
-
-
 
         telemetry.addData("leftbumper", gamepad1.left_bumper);
         telemetry.addData("Servo position", Pollen_Kicker.getPosition());
@@ -330,5 +287,14 @@ public class TeleopTest extends OpMode {
         double motorPulsesPerRevolution = 28;
         double targetTicksPerMinute = targetRpms * motorPulsesPerRevolution;
         return targetTicksPerMinute / 60;
+    }
+
+    private DcMotorEx getMotor(String name, DcMotor.Direction direction, DcMotor.RunMode mode, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+        DcMotorEx motor = hardwareMap.get(DcMotorEx.class, name);
+        motor.setDirection(direction);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setMode(mode);
+        motor.setZeroPowerBehavior(zeroPowerBehavior);
+        return motor;
     }
 }
