@@ -45,6 +45,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -74,6 +75,22 @@ public class ColorSensorTest extends LinearOpMode {
      * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */
     View relativeLayout;
 
+    double pollen_Kicker_Open = .45;
+    double pollen_Kicker_Closed = .7;
+    double nectar_Kicker_Open = .35;
+    double nectar_Kicker_Closed = .6;
+    double pollen_Gate_Open = .6;
+    double pollen_Gate_Closed = .4;
+    double nectar_Gate_Open = .45;
+    double nectar_Gate_Closed = .65;
+
+    ServoImplEx Pollen_Kicker;
+    ServoImplEx Pollen_Gate;
+    ServoImplEx Nectar_Kicker;
+    ServoImplEx Nectar_Gate;
+
+
+
     /*
      * The runOpMode() method is the root of this OpMode, as it is in all LinearOpModes.
      * Our implementation here, though is a bit unusual: we've decided to put all the actual work
@@ -85,6 +102,15 @@ public class ColorSensorTest extends LinearOpMode {
      * the former from the latter in separate methods.
      */
     @Override public void runOpMode() {
+        Pollen_Kicker = hardwareMap.get(ServoImplEx.class, "Pollen_Kicker");   // must match your config name
+        Pollen_Kicker.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
+        Pollen_Gate = hardwareMap.get(ServoImplEx.class, "Pollen_Gate");   // must match your config name
+        Pollen_Gate.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
+        Nectar_Kicker = hardwareMap.get(ServoImplEx.class, "Nectar_Kicker");   // must match your config name
+        Nectar_Kicker.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
+        Nectar_Gate = hardwareMap.get(ServoImplEx.class, "Nectar_Gate");   // must match your config name
+        Nectar_Gate.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
+
 
         // Get a reference to the RelativeLayout so we can later change the background
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
@@ -214,6 +240,18 @@ public class ColorSensorTest extends LinearOpMode {
                     relativeLayout.setBackgroundColor(Color.HSVToColor(hsvValues));
                 }
             });
+
+
+            if (colors.red >= 0.092 && colors.green >= 0.082 && colors.blue >= 0.035) {
+                Nectar_Gate.setPosition(nectar_Gate_Open);
+                //Pollen_Gate.setPosition(pollen_Gate_Closed);
+            }
+            else {
+                Nectar_Gate.setPosition(nectar_Gate_Closed);
+                //Pollen_Gate.setPosition(pollen_Gate_Open);
+            }
+
+
         }
     }
 }
