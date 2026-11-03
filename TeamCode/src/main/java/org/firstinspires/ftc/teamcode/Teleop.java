@@ -30,6 +30,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -90,7 +91,7 @@ public class Teleop extends OpMode {
         backRightDrive = getMotor("back_right_drive", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake = getMotor("intake", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
-        Nectar_Cannon = getMotor("Nectar_Cannon", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
+        Nectar_Cannon = getMotor("Nectar_Cannon", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
         Pollen_Cannon = getMotor("Pollen_Cannon", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "Rev_Color_Sensor");
         colorSensor.setGain(2);
@@ -267,7 +268,7 @@ public class Teleop extends OpMode {
 
         Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
 
-                new PIDFCoefficients(1.2, 0.12, 0, 11.8));
+                new PIDFCoefficients(1, 0.12, 0, 11.8));
 
         double Ncannon = getCannonTicksPerSecond(4200);
         Nectar_Cannon.setVelocity(Ncannon);
@@ -275,9 +276,9 @@ public class Teleop extends OpMode {
         telemetry.addData(" actual", Nectar_Cannon.getVelocity());
         Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
 
-                new PIDFCoefficients(1.2, 0.12, 0, 11.8));
+                new PIDFCoefficients(1, 0.12, 0, 11.8));
 
-        double Pcannon = getCannonTicksPerSecond(3500);
+        double Pcannon = getCannonTicksPerSecond(4100);
         Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());

@@ -242,16 +242,48 @@ public class ColorSensorTest extends LinearOpMode {
             });
 
 
-            if (colors.red >= 0.092 && colors.green >= 0.082 && colors.blue >= 0.035) {
-                Nectar_Gate.setPosition(nectar_Gate_Open);
+            if (colors.red >= 0.460 && colors.green >= 0.200 && colors.green <= 520 && colors.blue >= 0.150) {
+                //Nectar_Gate.setPosition(nectar_Gate_Open);
                 //Pollen_Gate.setPosition(pollen_Gate_Closed);
             }
             else {
-                Nectar_Gate.setPosition(nectar_Gate_Closed);
+                //Nectar_Gate.setPosition(nectar_Gate_Closed);
                 //Pollen_Gate.setPosition(pollen_Gate_Open);
             }
+
+            if (gamepad2.yWasPressed()){
+                minRed = Float.MAX_VALUE;
+                maxRed = Float.MIN_VALUE;
+                minGreen = Float.MAX_VALUE;
+                maxGreen = Float.MIN_VALUE;
+                minBlue = Float.MAX_VALUE;
+                maxBlue = Float.MIN_VALUE;
+            }
+
+            if (gamepad2.x) {
+                minRed = Float.min(minRed, colors.red);
+                maxRed = Float.max(maxRed, colors.red);
+                minGreen = Float.min(minGreen, colors.green);
+                maxGreen = Float.max(maxGreen, colors.green);
+                minBlue = Float.min(minBlue, colors.blue);
+                maxBlue = Float.max(maxBlue, colors.blue);
+            }
+
+            telemetry.addData("minRed", minRed);
+            telemetry.addData("maxRed", maxRed);
+            telemetry.addData("minBlue", minBlue);
+            telemetry.addData("maxBlue", maxBlue);
+            telemetry.addData("minGreen", minGreen);
+            telemetry.addData("maxGreen", maxGreen);
 
 
         }
     }
+
+    float minRed = Float.MAX_VALUE;
+    float maxRed = Float.MIN_VALUE;
+    float minGreen = Float.MAX_VALUE;
+    float maxGreen = Float.MIN_VALUE;
+    float minBlue = Float.MAX_VALUE;
+    float maxBlue = Float.MIN_VALUE;
 }
