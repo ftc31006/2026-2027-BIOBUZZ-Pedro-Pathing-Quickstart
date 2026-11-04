@@ -46,6 +46,7 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -88,6 +89,8 @@ public class ColorSensorTest extends LinearOpMode {
     ServoImplEx Pollen_Gate;
     ServoImplEx Nectar_Kicker;
     ServoImplEx Nectar_Gate;
+
+    ElapsedTime Nectar_Gate_Timer = new ElapsedTime();
 
 
 
@@ -242,13 +245,15 @@ public class ColorSensorTest extends LinearOpMode {
             });
 
 
-            if (colors.red >= 0.460 && colors.green >= 0.200 && colors.green <= 520 && colors.blue >= 0.150) {
-                //Nectar_Gate.setPosition(nectar_Gate_Open);
-                //Pollen_Gate.setPosition(pollen_Gate_Closed);
+            if (hsvValues[0] <= 40) {
+                Nectar_Gate.setPosition(nectar_Gate_Open);
+                Pollen_Gate.setPosition(pollen_Gate_Closed);
+
+                Nectar_Gate_Timer.reset();
             }
-            else {
-                //Nectar_Gate.setPosition(nectar_Gate_Closed);
-                //Pollen_Gate.setPosition(pollen_Gate_Open);
+            else if (Nectar_Gate_Timer.milliseconds() > 500) {
+                Nectar_Gate.setPosition(nectar_Gate_Closed);
+                Pollen_Gate.setPosition(pollen_Gate_Open);
             }
 
             if (gamepad2.yWasPressed()){
