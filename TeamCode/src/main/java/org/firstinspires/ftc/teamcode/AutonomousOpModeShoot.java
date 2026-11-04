@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-@Autonomous(name = "Autonomous", group = "Robot")
+@Autonomous(name = "Autonomous Shoot", group = "Robot")
 public class AutonomousOpModeShoot extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
