@@ -251,7 +251,7 @@ public class ColorSensorTest extends LinearOpMode {
 
                 Nectar_Gate_Timer.reset();
             }
-            else if (Nectar_Gate_Timer.milliseconds() > 500) {
+            else if (Nectar_Gate_Timer.milliseconds() > 50) {
                 Nectar_Gate.setPosition(nectar_Gate_Closed);
                 Pollen_Gate.setPosition(pollen_Gate_Open);
             }
