@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
@@ -56,26 +57,50 @@ public class AutonomousOpModeShoot extends LinearOpMode {
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitForStart();
+
+        Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+                new PIDFCoefficients(1.2, 0.12, 0, 11.8));
+        Pollen_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+                new PIDFCoefficients(1.2, 0.12, 0, 11.8));
+
+        Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+
+                new PIDFCoefficients(1, 0.12, 0, 11.8));
+
+        double Ncannon = getCannonTicksPerSecond(4200);
+        Nectar_Cannon.setVelocity(Ncannon);
+        telemetry.addData("Nectar_Cannon target", Ncannon);
+        telemetry.addData(" actual", Nectar_Cannon.getVelocity());
+        Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+
+                new PIDFCoefficients(1, 0.12, 0, 11.8));
+
+        double Pcannon = getCannonTicksPerSecond(4100);
+        Pollen_Cannon.setVelocity(Pcannon);
+        telemetry.addData("Pollen_Cannon target", Pcannon);
+        telemetry.addData(" actual", Pollen_Cannon.getVelocity());
+
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Closed);
-        sleep(250);
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Open);
-        sleep(250);
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Closed);
-        sleep(250);
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Open);
-        sleep(250);
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Closed);
-        sleep(250);
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Open);
-        sleep(250);
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Closed);
-        sleep(250);
+        sleep(500);
         Nectar_Kicker.setPosition(nectar_Kicker_Open);
-        sleep(250);
-        backLeftDrive.setPower(drivePower);
-        backRightDrive.setPower(drivePower);
-        frontLeftDrive.setPower(drivePower);
-        frontRightDrive.setPower(drivePower);
+        sleep(500);
+        backLeftDrive.setPower(-drivePower);
+        backRightDrive.setPower(-drivePower);
+        frontLeftDrive.setPower(-drivePower);
+        frontRightDrive.setPower(-drivePower);
         sleep(500);
         backLeftDrive.setPower(0);
         backRightDrive.setPower(0);
@@ -98,7 +123,7 @@ public class AutonomousOpModeShoot extends LinearOpMode {
         backRightDrive.setPower(-drivePower);
         frontLeftDrive.setPower(-drivePower);
         frontRightDrive.setPower(drivePower);
-        sleep(15000);
+        sleep(1400);
         backLeftDrive.setPower(0);
         backRightDrive.setPower(0);
         frontLeftDrive.setPower(0);
@@ -112,5 +137,11 @@ public class AutonomousOpModeShoot extends LinearOpMode {
         motor.setMode(mode);
         motor.setZeroPowerBehavior(zeroPowerBehavior);
         return motor;
+    }
+
+    private double getCannonTicksPerSecond(double targetRpms) {
+        double motorPulsesPerRevolution = 28;
+        double targetTicksPerMinute = targetRpms * motorPulsesPerRevolution;
+        return targetTicksPerMinute / 60;
     }
 }
