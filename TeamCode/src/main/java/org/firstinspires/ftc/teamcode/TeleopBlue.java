@@ -140,7 +140,7 @@ public class TeleopBlue extends OpMode {
     @Override
     public void start() {
         Pollen_Kicker.setPosition(pollen_Kicker_Open);
-        Pollen_Gate.setPosition(pollen_Gate_Closed);
+        Pollen_Gate.setPosition(pollen_Gate_Open);
         Nectar_Kicker.setPosition(nectar_Kicker_Open);
         Nectar_Gate.setPosition(nectar_Gate_Closed);
     }
@@ -208,13 +208,13 @@ public class TeleopBlue extends OpMode {
 
         if (hsvValues[0] >= 200) {
             Nectar_Gate.setPosition(nectar_Gate_Open);
-            Pollen_Gate.setPosition(pollen_Gate_Closed);
+            //Pollen_Gate.setPosition(pollen_Gate_Closed);
 
             Nectar_Gate_Timer.reset();
         }
-        else if (Nectar_Gate_Timer.milliseconds() > 50) {
+        else if (Nectar_Gate_Timer.milliseconds() > 70 || (hsvValues[0] >= 90 && hsvValues[0] <= 100)) {
             Nectar_Gate.setPosition(nectar_Gate_Closed);
-            Pollen_Gate.setPosition(pollen_Gate_Open);
+            //Pollen_Gate.setPosition(pollen_Gate_Open);
         }
 
 
