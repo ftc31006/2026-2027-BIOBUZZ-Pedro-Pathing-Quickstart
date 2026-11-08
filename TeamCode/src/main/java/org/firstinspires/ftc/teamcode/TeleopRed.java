@@ -100,10 +100,10 @@ public class TeleopRed extends OpMode {
 
     @Override
     public void init() {
-        frontLeftDrive = getMotor("front_left_drive", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive = getMotor("front_right_drive", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive = getMotor("back_left_drive", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive = getMotor("back_right_drive", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftDrive = getMotor("front_left_drive", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
+        frontRightDrive = getMotor("front_right_drive", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
+        backLeftDrive = getMotor("back_left_drive", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
+        backRightDrive = getMotor("back_right_drive", DcMotor.Direction.FORWARD, DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
 
         intake = getMotor("intake", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
         Nectar_Cannon = getMotor("Nectar_Cannon", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
@@ -301,7 +301,7 @@ public class TeleopRed extends OpMode {
 
                 new PIDFCoefficients(1, 0.12, 0, 11.8));
 
-        double Ncannon = getCannonTicksPerSecond(4200);
+        double Ncannon = getCannonTicksPerSecond(Constants.NectarCannonVelocity);
         Nectar_Cannon.setVelocity(Ncannon);
         telemetry.addData("Nectar_Cannon target", Ncannon);
         telemetry.addData(" actual", Nectar_Cannon.getVelocity());
@@ -309,7 +309,7 @@ public class TeleopRed extends OpMode {
 
                 new PIDFCoefficients(1, 0.12, 0, 11.8));
 
-        double Pcannon = getCannonTicksPerSecond(4100);
+        double Pcannon = getCannonTicksPerSecond(Constants.pollenCannonVelocity);
         Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());

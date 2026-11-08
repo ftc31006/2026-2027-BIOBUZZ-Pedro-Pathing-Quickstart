@@ -79,6 +79,7 @@ public class AutonomousOpModeShoot extends LinearOpMode {
         Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());
+
         backLeftDrive.setPower(-drivePower);
         backRightDrive.setPower(-drivePower);
         frontLeftDrive.setPower(-drivePower);
@@ -105,24 +106,30 @@ public class AutonomousOpModeShoot extends LinearOpMode {
         sleep(1000);
         Pollen_Kicker.setPosition(pollen_Kicker_Open);
         sleep(1000);
-        backLeftDrive.setPower(50);
-        backRightDrive.setPower(-50);
-        frontLeftDrive.setPower(50);
-        frontRightDrive.setPower(-50);
-        sleep(5000);
+        backLeftDrive.setPower(15);
+        backRightDrive.setPower(15);
+        frontLeftDrive.setPower(-15);
+        frontRightDrive.setPower(-15);
+        sleep(1000);
         backLeftDrive.setPower(0);
         backRightDrive.setPower(0);
         frontLeftDrive.setPower(0);
         frontRightDrive.setPower(0);
-//        backLeftDrive.setPower(drivePower);
-//        backRightDrive.setPower(drivePower);
-//        frontLeftDrive.setPower(drivePower);
-//        frontRightDrive.setPower(drivePower);
-//        sleep(1400);
-//        backLeftDrive.setPower(0);
-//        backRightDrive.setPower(0);
-//        frontLeftDrive.setPower(0);
-//        frontRightDrive.setPower(0);
+        backLeftDrive.setPower(-drivePower);
+        backRightDrive.setPower(-drivePower);
+        frontLeftDrive.setPower(-drivePower);
+        frontRightDrive.setPower(-drivePower);
+        sleep(1400);
+        backLeftDrive.setPower(0);
+        backRightDrive.setPower(0);
+        frontLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        sleep(500);
+        backLeftDrive.setPower(15);
+        backRightDrive.setPower(15);
+        frontLeftDrive.setPower(-15);
+        frontRightDrive.setPower(-15);
+        sleep(500);
     }
 
     private DcMotorEx getMotor(String name, DcMotor.Direction direction, DcMotor.RunMode mode, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
