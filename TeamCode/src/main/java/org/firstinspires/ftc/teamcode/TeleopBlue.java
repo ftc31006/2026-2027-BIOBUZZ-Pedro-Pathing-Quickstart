@@ -301,7 +301,7 @@ public class TeleopBlue extends OpMode {
 
                 new PIDFCoefficients(1, 0.12, 0, 11.8));
 
-        double Ncannon = getCannonTicksPerSecond(Constants.NectarCannonVelocity);
+        double Ncannon = getCannonTicksPerSecond(RampageConstants.NectarCannonVelocity);
         Nectar_Cannon.setVelocity(Ncannon);
         telemetry.addData("Nectar_Cannon target", Ncannon);
         telemetry.addData(" actual", Nectar_Cannon.getVelocity());
@@ -309,7 +309,7 @@ public class TeleopBlue extends OpMode {
 
                 new PIDFCoefficients(1, 0.12, 0, 11.8));
 
-        double Pcannon = getCannonTicksPerSecond(Constants.pollenCannonVelocity);
+        double Pcannon = getCannonTicksPerSecond(RampageConstants.pollenCannonVelocity);
         Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());
