@@ -49,7 +49,7 @@ public class Pedro_Test extends LinearOpMode {
     public Command autoRoutine() {
         return sequential(
                 follow(follower, path1()),
-                ShootCommand.shoot(Pollen_Kicker),
+//                ShootCommand.shoot(Pollen_Kicker),
                 follow(follower, path2()),
                 follow(follower, path3())
         );
