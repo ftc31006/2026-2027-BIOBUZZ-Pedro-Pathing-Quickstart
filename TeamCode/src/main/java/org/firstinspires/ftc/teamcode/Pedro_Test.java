@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.teamcode.commands.ShootCommand;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous(name = "Pedro_Test", group = "Autonomous")
@@ -43,20 +44,12 @@ public class Pedro_Test extends LinearOpMode {
     ServoImplEx Pollen_Gate;
     ServoImplEx Nectar_Kicker;
     ServoImplEx Nectar_Gate;
-    double pollen_Kicker_Open = .45;
-    double pollen_Kicker_Closed = .7;
-    double nectar_Kicker_Open = .35;
-    double nectar_Kicker_Closed = .6;
-    double pollen_Gate_Open = .6;
-    double pollen_Gate_Closed = .4;
-    double nectar_Gate_Open = .45;
-    double nectar_Gate_Closed = .65;
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
                 follow(follower, path1()),
-                
+                ShootCommand.shoot(Pollen_Kicker),
                 follow(follower, path2()),
                 follow(follower, path3())
         );

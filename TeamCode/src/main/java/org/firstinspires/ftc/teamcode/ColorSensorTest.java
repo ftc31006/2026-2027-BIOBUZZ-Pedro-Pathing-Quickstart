@@ -76,15 +76,6 @@ public class ColorSensorTest extends LinearOpMode {
      * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */
     View relativeLayout;
 
-    double pollen_Kicker_Open = .45;
-    double pollen_Kicker_Closed = .7;
-    double nectar_Kicker_Open = .35;
-    double nectar_Kicker_Closed = .6;
-    double pollen_Gate_Open = .6;
-    double pollen_Gate_Closed = .4;
-    double nectar_Gate_Open = .45;
-    double nectar_Gate_Closed = .65;
-
     ServoImplEx Pollen_Kicker;
     ServoImplEx Pollen_Gate;
     ServoImplEx Nectar_Kicker;
@@ -246,14 +237,14 @@ public class ColorSensorTest extends LinearOpMode {
 
 
             if (hsvValues[0] <= 40) {
-                Nectar_Gate.setPosition(nectar_Gate_Open);
-                Pollen_Gate.setPosition(pollen_Gate_Closed);
+                Nectar_Gate.setPosition(RampageConstants.NectarGateOpenPosition);
+                Pollen_Gate.setPosition(RampageConstants.PollenGateClosedPosition);
 
                 Nectar_Gate_Timer.reset();
             }
             else if (Nectar_Gate_Timer.milliseconds() > 50) {
-                Nectar_Gate.setPosition(nectar_Gate_Closed);
-                Pollen_Gate.setPosition(pollen_Gate_Open);
+                Nectar_Gate.setPosition(RampageConstants.NectarGateClosedPosition);
+                Pollen_Gate.setPosition(RampageConstants.PollenGateOpenPosition);
             }
 
             if (gamepad2.yWasPressed()){

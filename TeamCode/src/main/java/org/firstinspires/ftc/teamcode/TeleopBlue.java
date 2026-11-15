@@ -76,15 +76,6 @@ public class TeleopBlue extends OpMode {
     ServoImplEx Nectar_Kicker;
     ServoImplEx Nectar_Gate;
 
-    double pollen_Kicker_Open = .45;
-    double pollen_Kicker_Closed = .7;
-    double nectar_Kicker_Open = .35;
-    double nectar_Kicker_Closed = .6;
-    double pollen_Gate_Open = .6;
-    double pollen_Gate_Closed = .4;
-    double nectar_Gate_Open = .45;
-    double nectar_Gate_Closed = .65;
-
 
 
     /** The relativeLayout field is used to aid in providing interesting visual feedback
@@ -139,10 +130,10 @@ public class TeleopBlue extends OpMode {
 
     @Override
     public void start() {
-        Pollen_Kicker.setPosition(pollen_Kicker_Open);
-        Pollen_Gate.setPosition(pollen_Gate_Open);
-        Nectar_Kicker.setPosition(nectar_Kicker_Open);
-        Nectar_Gate.setPosition(nectar_Gate_Closed);
+        Pollen_Kicker.setPosition(RampageConstants.PollenKickerOpenPosition);
+        Pollen_Gate.setPosition(RampageConstants.PollenGateOpenPosition);
+        Nectar_Kicker.setPosition(RampageConstants.NectarKickerOpenPosition);
+        Nectar_Gate.setPosition(RampageConstants.NectarGateClosedPosition);
     }
 
     @Override
@@ -186,34 +177,34 @@ public class TeleopBlue extends OpMode {
        // intake.setPower(gamepad1.right_stick_x);
 
         if (gamepad2.left_trigger >= .5) {
-            Pollen_Kicker.setPosition(pollen_Kicker_Closed);
+            Pollen_Kicker.setPosition(RampageConstants.PollenKickerClosedPosition);
         }
         else {
-            Pollen_Kicker.setPosition(pollen_Kicker_Open);
+            Pollen_Kicker.setPosition(RampageConstants.PollenKickerOpenPosition);
         }
         if (gamepad2.right_trigger >= .5) {
-            Nectar_Kicker.setPosition(nectar_Kicker_Closed);
+            Nectar_Kicker.setPosition(RampageConstants.NectarKickerClosedPosition);
         }
         else {
-            Nectar_Kicker.setPosition(nectar_Kicker_Open);
+            Nectar_Kicker.setPosition(RampageConstants.NectarKickerOpenPosition);
         }
         if (gamepad2.a){
-            Pollen_Gate.setPosition(pollen_Gate_Closed);
-            Nectar_Gate.setPosition(nectar_Gate_Open);
+            Pollen_Gate.setPosition(RampageConstants.PollenGateClosedPosition);
+            Nectar_Gate.setPosition(RampageConstants.NectarGateOpenPosition);
         }
         else{
-            Pollen_Gate.setPosition(pollen_Gate_Open);
-            Nectar_Gate.setPosition(nectar_Gate_Closed);
+            Pollen_Gate.setPosition(RampageConstants.PollenGateOpenPosition);
+            Nectar_Gate.setPosition(RampageConstants.NectarGateClosedPosition);
         }
 
         if (hsvValues[0] >= 200) {
-            Nectar_Gate.setPosition(nectar_Gate_Open);
+            Nectar_Gate.setPosition(RampageConstants.NectarGateOpenPosition);
             //Pollen_Gate.setPosition(pollen_Gate_Closed);
 
             Nectar_Gate_Timer.reset();
         }
         else if (Nectar_Gate_Timer.milliseconds() > 70 || (hsvValues[0] >= 90 && hsvValues[0] <= 100)) {
-            Nectar_Gate.setPosition(nectar_Gate_Closed);
+            Nectar_Gate.setPosition(RampageConstants.NectarGateClosedPosition);
             //Pollen_Gate.setPosition(pollen_Gate_Open);
         }
 
@@ -309,7 +300,7 @@ public class TeleopBlue extends OpMode {
 
                 new PIDFCoefficients(1, 0.12, 0, 11.8));
 
-        double Pcannon = getCannonTicksPerSecond(RampageConstants.pollenCannonVelocity);
+        double Pcannon = getCannonTicksPerSecond(RampageConstants.PollenCannonVelocity);
         Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());

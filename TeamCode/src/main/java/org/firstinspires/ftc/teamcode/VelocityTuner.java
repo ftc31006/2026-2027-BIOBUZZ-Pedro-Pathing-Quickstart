@@ -36,16 +36,6 @@ public class VelocityTuner extends OpMode {
     ServoImplEx Nectar_Kicker;
     ServoImplEx Nectar_Gate;
 
-    double pollen_Kicker_Open = .45;
-    double pollen_Kicker_Closed = .7;
-    double nectar_Kicker_Open = .35;
-    double nectar_Kicker_Closed = .6;
-    double pollen_Gate_Open = .6;
-    double pollen_Gate_Closed = .4;
-    double nectar_Gate_Open = .45;
-    double nectar_Gate_Closed = .65;
-
-
 
     /** The relativeLayout field is used to aid in providing interesting visual feedback
      * in this sample application; you probably *don't* need this when you use a color sensor on your
@@ -95,8 +85,8 @@ public class VelocityTuner extends OpMode {
 
     @Override
     public void start() {
-        Pollen_Kicker.setPosition(pollen_Kicker_Open);
-        Nectar_Kicker.setPosition(nectar_Kicker_Open);
+        Pollen_Kicker.setPosition(RampageConstants.PollenKickerOpenPosition);
+        Nectar_Kicker.setPosition(RampageConstants.NectarKickerOpenPosition);
         Nectar_Cannon.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
 
                 new PIDFCoefficients(1, 0.12, 0, 11.8));
