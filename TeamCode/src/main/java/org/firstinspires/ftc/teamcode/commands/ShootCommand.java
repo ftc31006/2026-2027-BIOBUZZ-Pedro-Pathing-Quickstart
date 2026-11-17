@@ -8,21 +8,17 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.RampageConstants;
 
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.groups.Groups.sequential;
+
 public class ShootCommand {
     public static Command shoot(ServoImplEx kicker) {
         return sequential(
-                setKickerPosition(kicker, RampageConstants.PollenKickerClosedPosition),
-                waitMs(1000),
-                setKickerPosition(kicker, RampageConstants.PollenKickerOpenPosition),
-                waitMs(1000)
+                instant(() -> kicker.setPosition(RampageConstants.PollenKickerClosedPosition)),
+                waitMs(2000),
+                instant(() -> kicker.setPosition(RampageConstants.PollenKickerOpenPosition)),
+                waitMs(2000)
         );
-    }
-
-    private static Command setKickerPosition(ServoImplEx kicker, double position) {
-        return Command.build()
-            .setExecute(() -> {
-                kicker.setPosition(position);
-            });
-
     }
 }

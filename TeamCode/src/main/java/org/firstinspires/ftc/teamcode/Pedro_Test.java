@@ -27,17 +27,14 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 @Autonomous(name = "Pedro_Test", group = "Autonomous")
 public class Pedro_Test extends LinearOpMode {
 
-
     private Follower follower;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(59.2609, 8, -90);
-    private final Pose path1 = poseFactory.of(59.028, 18.065, -90);
+    private final Pose path1 = poseFactory.of(59.2609, 10.8445, -90);
     private final Pose point2 = poseFactory.of(57.2203, 121.7529, -90);
     private final Pose point3 = poseFactory.of(9.3022, 122.0961, -90);
-
-
     DcMotorEx Pollen_Cannon;
     DcMotorEx Nectar_Cannon;
     ServoImplEx Pollen_Kicker;
@@ -49,7 +46,10 @@ public class Pedro_Test extends LinearOpMode {
     public Command autoRoutine() {
         return sequential(
                 follow(follower, path1()),
-//                ShootCommand.shoot(Pollen_Kicker),
+                ShootCommand.shoot(Pollen_Kicker),
+                ShootCommand.shoot(Pollen_Kicker),
+                ShootCommand.shoot(Pollen_Kicker),
+                ShootCommand.shoot(Pollen_Kicker),
                 follow(follower, path2()),
                 follow(follower, path3())
         );
@@ -57,7 +57,13 @@ public class Pedro_Test extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Nectar_Cannon = getMotor("Nectar_Cannon",DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
+        Scheduler.reset();
+        follower = Constants.create(hardwareMap);
+        follower.setPose(start);
+        follower.update();
+
+        waitForStart();
+        Nectar_Cannon = getMotor("Nectar_Cannon", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
         Pollen_Cannon = getMotor("Pollen_Cannon", DcMotor.Direction.REVERSE, DcMotor.RunMode.RUN_USING_ENCODER, DcMotor.ZeroPowerBehavior.FLOAT);
         Pollen_Kicker = hardwareMap.get(ServoImplEx.class, "Pollen_Kicker");   // must match your config name
         Pollen_Kicker.setPwmRange(new PwmControl.PwmRange(500, 2500));     // goBILDA full range, gives the full 300°
@@ -89,13 +95,6 @@ public class Pedro_Test extends LinearOpMode {
         Pollen_Cannon.setVelocity(Pcannon);
         telemetry.addData("Pollen_Cannon target", Pcannon);
         telemetry.addData(" actual", Pollen_Cannon.getVelocity());
-        Scheduler.reset();
-        follower = Constants.create(hardwareMap);
-        follower.setPose(start);
-        follower.update();
-
-        waitForStart();
-
         schedule(autoRoutine());
 
         while (opModeIsActive()) {
@@ -116,6 +115,7 @@ public class Pedro_Test extends LinearOpMode {
     }
 
     public Path path1() {
+        sleep(2000);
         return Paths.line(start, path1).constant(path1);
     }
 
@@ -141,4 +141,3 @@ public class Pedro_Test extends LinearOpMode {
         return targetTicksPerMinute / 60;
     }
 }
-
